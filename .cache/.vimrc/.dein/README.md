@@ -1,149 +1,334 @@
-# deoplete.nvim
+fzf :heart: vim
+===============
 
-> Dark powered asynchronous completion framework for neovim/Vim8
+Things you can do with [fzf][fzf] and Vim.
 
-[![Build Status](https://travis-ci.org/Shougo/deoplete.nvim.svg?branch=master)](https://travis-ci.org/Shougo/deoplete.nvim)
-[![Join the chat at https://gitter.im/Shougo/deoplete.nvim](https://badges.gitter.im/Shougo/deoplete.nvim.svg)](https://gitter.im/Shougo/deoplete.nvim?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Doc](https://img.shields.io/badge/doc-%3Ah%20deoplete-orange.svg)](doc/deoplete.txt)
+Rationale
+---------
 
-Deoplete is the abbreviation of "dark powered neo-completion".  It
-provides an extensible and asynchronous completion framework for
-neovim/Vim8.
+[fzf][fzf] in itself is not a Vim plugin, and the official repository only
+provides the [basic wrapper function][run] for Vim and it's up to the users to
+write their own Vim commands with it. However, I've learned that many users of
+fzf are not familiar with Vimscript and are looking for the "default"
+implementation of the features they can find in the alternative Vim plugins.
 
-deoplete will display completions via `complete()` by default.
+This repository is a bundle of fzf-based commands and mappings extracted from
+my [.vimrc][vimrc] to address such needs. They are *not* designed to be
+flexible or configurable, and there's no guarantee of backward-compatibility.
 
-Here are some [completion sources](https://github.com/Shougo/deoplete.nvim/wiki/Completion-Sources) specifically made for deoplete.nvim.
+Why you should use fzf on Vim
+-----------------------------
 
-<!-- vim-markdown-toc GFM -->
+Because you can and you love fzf.
 
-- [Install](#install)
-  - [Requirements](#requirements)
-- [Configuration](#configuration)
-- [Screenshots](#screenshots)
+fzf runs asynchronously and can be orders of magnitude faster than similar Vim
+plugins. However, the benefit may not be noticeable if the size of the input
+is small, which is the case for many of the commands provided here.
+Nevertheless I wrote them anyway since it's really easy to implement custom
+selector with fzf.
 
-<!-- vim-markdown-toc -->
+Installation
+------------
 
-## Install
+fzf.vim depends on the basic Vim plugin of [the main fzf
+repository][fzf-main], which means you need to **set up both "fzf" and
+"fzf.vim" on Vim**. To learn more about fzf/Vim integration, see
+[README-VIM][README-VIM].
 
-**Note:** deoplete requires Neovim (0.2.0+ and of course, **latest** is
-recommended) or Vim8 with Python3 and timers enabled.  See
-[requirements](#requirements) if you aren't sure whether you have this.
+[fzf-main]: https://github.com/junegunn/fzf
+[README-VIM]: https://github.com/junegunn/fzf/blob/master/README-VIM.md
 
-For vim-plug
+### Using [vim-plug](https://github.com/junegunn/vim-plug)
 
-```viml
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
-let g:deoplete#enable_at_startup = 1
-```
-
-For dein.vim
-
-```viml
-call dein#add('Shougo/deoplete.nvim')
-if !has('nvim')
-  call dein#add('roxma/nvim-yarp')
-  call dein#add('roxma/vim-hug-neovim-rpc')
-endif
-let g:deoplete#enable_at_startup = 1
-```
-
-For manual installation(not recommended)
-
-1. Extract the files and put them in your Neovim or .vim directory
-   (usually `$XDG_CONFIG_HOME/nvim/`).
-
-2. Write `call deoplete#enable()` or `let g:deoplete#enable_at_startup = 1` in
-   your `init.vim`
-
-### Requirements
-
-deoplete requires Neovim or Vim8 with `if_python3`.
-
-If `:echo has("python3")` returns `1`, then you have python 3 support; otherwise, see below.
-
-You can enable Python3 interface with pip:
-
-    pip3 install neovim
-
-Please install nvim-yarp and vim-hug-neovim-rpc for Vim8.
-
-- <https://github.com/roxma/nvim-yarp>
-- <https://github.com/roxma/vim-hug-neovim-rpc>
-
-**Note: Python3 must be enabled before updating remote plugins**
-
-If Deoplete was installed prior to Python support being added to Neovim,
-`:UpdateRemotePlugins` should be executed manually in order to enable
-auto-completion.
-
-**Note: deoplete needs neovim-python ver.0.2.4+.**
-
-You need update neovim-python module.
-
-    pip3 install --upgrade neovim
-
-If you want to read the Neovim-python/python3 interface install documentation,
-you should read `:help provider-python` and the Wiki.
-<https://github.com/zchee/deoplete-jedi/wiki/Setting-up-Python-for-Neovim>
-
-## Configuration
+If you already installed fzf using [Homebrew](https://brew.sh/), the following
+should suffice:
 
 ```vim
-" Use deoplete.
-let g:deoplete#enable_at_startup = 1
+Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf.vim'
 ```
 
-See `:help deoplete-options` for a complete list of options.
+But if you want to install fzf as well using vim-plug:
 
-## Screenshots
+```vim
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+```
 
-Deoplete for JavaScript
-<https://www.youtube.com/watch?v=oanoPTpiSF4>
+- `dir` and `do` options are not mandatory
+- Use `./install --bin` instead if you don't need fzf outside of Vim
+- Make sure to use Vim 7.4 or above
 
-![File Name Completion](https://cloud.githubusercontent.com/assets/7141867/11717027/a99cac54-9f73-11e5-91ce-bce9274692e4.png)
+Commands
+--------
 
-![Omni Completion](https://cloud.githubusercontent.com/assets/7141867/11717030/ae809a28-9f73-11e5-8c12-79fe9c460401.png)
+| Command           | List                                                                    |
+| ---               | ---                                                                     |
+| `Files [PATH]`    | Files (similar to `:FZF`)                                               |
+| `GFiles [OPTS]`   | Git files (`git ls-files`)                                              |
+| `GFiles?`         | Git files (`git status`)                                                |
+| `Buffers`         | Open buffers                                                            |
+| `Colors`          | Color schemes                                                           |
+| `Ag [PATTERN]`    | [ag][ag] search result (`ALT-A` to select all, `ALT-D` to deselect all) |
+| `Rg [PATTERN]`    | [rg][rg] search result (`ALT-A` to select all, `ALT-D` to deselect all) |
+| `Lines [QUERY]`   | Lines in loaded buffers                                                 |
+| `BLines [QUERY]`  | Lines in the current buffer                                             |
+| `Tags [QUERY]`    | Tags in the project (`ctags -R`)                                        |
+| `BTags [QUERY]`   | Tags in the current buffer                                              |
+| `Marks`           | Marks                                                                   |
+| `Windows`         | Windows                                                                 |
+| `Locate PATTERN`  | `locate` command output                                                 |
+| `History`         | `v:oldfiles` and open buffers                                           |
+| `History:`        | Command history                                                         |
+| `History/`        | Search history                                                          |
+| `Snippets`        | Snippets ([UltiSnips][us])                                              |
+| `Commits`         | Git commits (requires [fugitive.vim][f])                                |
+| `BCommits`        | Git commits for the current buffer                                      |
+| `Commands`        | Commands                                                                |
+| `Maps`            | Normal mode mappings                                                    |
+| `Helptags`        | Help tags <sup id="a1">[1](#helptags)</sup>                             |
+| `Filetypes`       | File types
 
-![Neosnippets and neco-ghc integration](https://cloud.githubusercontent.com/assets/7141867/11717032/b4159c0e-9f73-11e5-91ee-404e6390366a.png)
+- Most commands support `CTRL-T` / `CTRL-X` / `CTRL-V` key
+  bindings to open in a new tab, a new split, or in a new vertical split
+- Bang-versions of the commands (e.g. `Ag!`) will open fzf in fullscreen
+- You can set `g:fzf_command_prefix` to give the same prefix to the commands
+    - e.g. `let g:fzf_command_prefix = 'Fzf'` and you have `FzfFiles`, etc.
 
-![deoplete + echodoc integration](https://github.com/archSeer/nvim-elixir/blob/master/autocomplete.gif)
+(<a name="helptags">1</a>: `Helptags` will shadow the command of the same name
+from [pathogen][pat]. But its functionality is still available via `call
+pathogen#helptags()`. [↩](#a1))
 
-![deoplete + deoplete-go integration](https://camo.githubusercontent.com/cfdefba43971bd44d466ead357bb296e38d7f88c/68747470733a2f2f6d656469612e67697068792e636f6d2f6d656469612f6c344b6930316d30314939424f485745302f67697068792e676966)
+[pat]: https://github.com/tpope/vim-pathogen
+[f]:   https://github.com/tpope/vim-fugitive
 
-![deoplete + deoplete-typescript integration](https://github.com/mhartington/deoplete-typescript/blob/master/deoplete-tss.gif)
+### Customization
 
-![Python completion using deoplete-jedi](https://cloud.githubusercontent.com/assets/3712731/17458493/8e10d1c0-5c44-11e6-8bd9-964f45365962.gif)
+#### Global options
 
-![C++ completion using clang_complete](https://cloud.githubusercontent.com/assets/3712731/17458501/cf88f89e-5c44-11e6-89a4-b4646aaa8021.gif)
+See [README-VIM.md][readme-vim] of the main fzf repository for details.
 
-![Java completion using vim-javacomplete2](https://cloud.githubusercontent.com/assets/3712731/17458504/f075e76a-5c44-11e6-97d5-c5525f61c4a9.gif)
+[readme-vim]: https://github.com/junegunn/fzf/blob/master/README-VIM.md#configuration
 
-![Vim Script completion using neco-vim](https://cloud.githubusercontent.com/assets/3712731/17461000/660e15be-5caf-11e6-8c02-eb9f9c169f3c.gif)
+```vim
+" This is the default extra key bindings
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
 
-![C# completion using deoplete-omnisharp](https://camo.githubusercontent.com/f429dc72f91b25619980dbb9d436065ba3fb0a44/68747470733a2f2f692e696d6775722e636f6d2f464e634c4441752e676966)
+" Default fzf layout
+" - down / up / left / right
+let g:fzf_layout = { 'down': '~40%' }
 
-![Register/Extract list completions](https://camo.githubusercontent.com/6a6df993ad0e05c014c72c8f8702447f9b34ad90/68747470733a2f2f692e696d6775722e636f6d2f5131663731744a2e676966)
+" In Neovim, you can set up fzf window using a Vim command
+let g:fzf_layout = { 'window': 'enew' }
+let g:fzf_layout = { 'window': '-tabnew' }
+let g:fzf_layout = { 'window': '10split enew' }
 
-![FSharp completion using deopletefs](https://github.com/callmekohei/deoplete-fsharp/blob/master/pic/sample.gif)
+" Customize fzf colors to match your color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
 
-![Typescript](https://user-images.githubusercontent.com/29815830/36537450-bfbf4884-1802-11e8-8ad4-dd4a0dccfed3.png)
+" Enable per-command history.
+" CTRL-N and CTRL-P will be automatically bound to next-history and
+" previous-history instead of down and up. If you don't like the change,
+" explicitly bind the keys to down and up in your $FZF_DEFAULT_OPTS.
+let g:fzf_history_dir = '~/.local/share/fzf-history'
+```
 
-![Javascript](https://user-images.githubusercontent.com/29815830/36537514-ef01ef7a-1802-11e8-944e-c33017dfbe2b.png)
+#### Command-local options
 
-![Css, scss, sass](https://user-images.githubusercontent.com/29815830/36537545-1184f10a-1803-11e8-81a1-097222a58752.png)
+```vim
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
 
-![Html](https://user-images.githubusercontent.com/29815830/36537602-40b19848-1803-11e8-8ac8-49b3b9ba2094.png)
+" [[B]Commits] Customize the options used by 'git log':
+let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
 
-![My custom snippets](https://user-images.githubusercontent.com/29815830/36537646-6578262e-1803-11e8-9bff-64874a606150.png)
+" [Tags] Command to generate tags file
+let g:fzf_tags_command = 'ctags -R'
 
-![C++ with cquery lang server](https://user-images.githubusercontent.com/1750795/38780762-7c74e51e-40a9-11e8-92f9-dee921555865.png)
+" [Commands] --expect expression for directly executing the command
+let g:fzf_commands_expect = 'alt-enter,ctrl-x'
+```
 
-![Rust using rls](https://user-images.githubusercontent.com/1750795/38780764-8524b0b8-40a9-11e8-91bc-6e4148c398a3.png)
+#### Advanced customization
 
-![Ruby dictionary completion](https://user-images.githubusercontent.com/1314340/44786516-5bb57a00-abcf-11e8-8687-492fa5f9f905.gif)
+You can use autoload functions to define your own commands.
+
+```vim
+" Command for git grep
+" - fzf#vim#grep(command, with_column, [options], [fullscreen])
+command! -bang -nargs=* GGrep
+  \ call fzf#vim#grep(
+  \   'git grep --line-number '.shellescape(<q-args>), 0,
+  \   { 'dir': systemlist('git rev-parse --show-toplevel')[0] }, <bang>0)
+
+" Override Colors command. You can safely do this in your .vimrc as fzf.vim
+" will not override existing commands.
+command! -bang Colors
+  \ call fzf#vim#colors({'left': '15%', 'options': '--reverse --margin 30%,0'}, <bang>0)
+
+" Augmenting Ag command using fzf#vim#with_preview function
+"   * fzf#vim#with_preview([[options], preview window, [toggle keys...]])
+"     * For syntax-highlighting, Ruby and any of the following tools are required:
+"       - Highlight: http://www.andre-simon.de/doku/highlight/en/highlight.php
+"       - CodeRay: http://coderay.rubychan.de/
+"       - Rouge: https://github.com/jneen/rouge
+"
+"   :Ag  - Start fzf with hidden preview window that can be enabled with "?" key
+"   :Ag! - Start fzf in fullscreen and display the preview window above
+command! -bang -nargs=* Ag
+  \ call fzf#vim#ag(<q-args>,
+  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \                 <bang>0)
+
+" Similarly, we can apply it to fzf#vim#grep. To use ripgrep instead of ag:
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
+
+" Likewise, Files command with preview window
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+```
+
+Mappings
+--------
+
+| Mapping                            | Description                               |
+| ---                                | ---                                       |
+| `<plug>(fzf-maps-n)`               | Normal mode mappings                      |
+| `<plug>(fzf-maps-i)`               | Insert mode mappings                      |
+| `<plug>(fzf-maps-x)`               | Visual mode mappings                      |
+| `<plug>(fzf-maps-o)`               | Operator-pending mappings                 |
+| `<plug>(fzf-complete-word)`        | `cat /usr/share/dict/words`               |
+| `<plug>(fzf-complete-path)`        | Path completion using `find` (file + dir) |
+| `<plug>(fzf-complete-file)`        | File completion using `find`              |
+| `<plug>(fzf-complete-file-ag)`     | File completion using `ag`                |
+| `<plug>(fzf-complete-line)`        | Line completion (all open buffers)        |
+| `<plug>(fzf-complete-buffer-line)` | Line completion (current buffer only)     |
+
+### Usage
+
+```vim
+" Mapping selecting mappings
+nmap <leader><tab> <plug>(fzf-maps-n)
+xmap <leader><tab> <plug>(fzf-maps-x)
+omap <leader><tab> <plug>(fzf-maps-o)
+
+" Insert mode completion
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-j> <plug>(fzf-complete-file-ag)
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
+" Advanced customization using autoload functions
+inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
+```
+
+### Completion helper
+
+`fzf#vim#complete` is a helper function for creating custom fuzzy completion
+using fzf. If the first parameter is a command string or a Vim list, it will
+be used as the source.
+
+```vim
+" Replace the default dictionary completion with fzf-based fuzzy completion
+inoremap <expr> <c-x><c-k> fzf#vim#complete('cat /usr/share/dict/words')
+```
+
+For advanced uses, you can pass an options dictionary to the function. The set
+of options is pretty much identical to that for `fzf#run` only with the
+following exceptions:
+
+- `reducer` (funcref)
+    - Reducer transforms the output lines of fzf into a single string value
+- `prefix` (string or funcref; default: `\k*$`)
+    - Regular expression pattern to extract the completion prefix
+    - Or a function to extract completion prefix
+- Both `source` and `options` can be given as funcrefs that take the
+  completion prefix as the argument and return the final value
+- `sink` or `sink*` are ignored
+
+```vim
+" Global line completion (not just open buffers. ripgrep required.)
+inoremap <expr> <c-x><c-l> fzf#vim#complete(fzf#wrap({
+  \ 'prefix': '^.*$',
+  \ 'source': 'rg -n ^ --color always',
+  \ 'options': '--ansi --delimiter : --nth 3..',
+  \ 'reducer': { lines -> join(split(lines[0], ':\zs')[2:], '') }}))
+```
+
+#### Reducer example
+
+```vim
+function! s:make_sentence(lines)
+  return substitute(join(a:lines), '^.', '\=toupper(submatch(0))', '').'.'
+endfunction
+
+inoremap <expr> <c-x><c-s> fzf#vim#complete({
+  \ 'source':  'cat /usr/share/dict/words',
+  \ 'reducer': function('<sid>make_sentence'),
+  \ 'options': '--multi --reverse --margin 15%,0',
+  \ 'left':    20})
+```
+
+Status line of terminal buffer
+------------------------------
+
+When fzf starts in a terminal buffer (see [fzf/README-VIM.md][termbuf]), you
+may want to customize the statusline of the containing buffer.
+
+[termbuf]: https://github.com/junegunn/fzf/blob/master/README-VIM.md#fzf-inside-terminal-buffer
+
+### Hide statusline
+
+```vim
+autocmd! FileType fzf
+autocmd  FileType fzf set laststatus=0 noshowmode noruler
+  \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+```
+
+### Custom statusline
+
+```vim
+function! s:fzf_statusline()
+  " Override statusline as you like
+  highlight fzf1 ctermfg=161 ctermbg=251
+  highlight fzf2 ctermfg=23 ctermbg=251
+  highlight fzf3 ctermfg=237 ctermbg=251
+  setlocal statusline=%#fzf1#\ >\ %#fzf2#fz%#fzf3#f
+endfunction
+
+autocmd! User FzfStatusLine call <SID>fzf_statusline()
+```
+
+License
+-------
+
+MIT
+
+[fzf]:   https://github.com/junegunn/fzf
+[run]:   https://github.com/junegunn/fzf#usage-as-vim-plugin
+[vimrc]: https://github.com/junegunn/dotfiles/blob/master/vimrc
+[ag]:    https://github.com/ggreer/the_silver_searcher
+[rg]:    https://github.com/BurntSushi/ripgrep
+[us]:    https://github.com/SirVer/ultisnips

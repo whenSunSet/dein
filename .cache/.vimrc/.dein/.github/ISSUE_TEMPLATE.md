@@ -1,29 +1,28 @@
-<!-- Check all that apply [x] -->
-- Category
-    - [ ] Question
-    - [ ] Bug
-    - [ ] Suggestion
-- OS
-    - [ ] Linux
-    - [ ] macOS
-    - [ ] Windows
-    - [ ] Etc.
-- Vim
-    - [ ] Vim
-    - [ ] Neovim
+<!--- To assist in resolving your issue, provide as much information as possible. -->
 
-<!--
+### Environment
+<!--- Describe your Vim/NERDTree setup. -->
 
-Before submitting
-=================
+* Operating System: 
+* Vim version `:version`: 
+* NERDTree version `git rev-parse --short HEAD`: 
+* NERDTree settings applied in your vimrc, if any:
+    ```vim
+    ```
 
-- Make sure that you have the latest version of fzf and fzf.vim
-- Check if your problem is reproducible with a minimal configuration
+### Process
+<!--- List the steps that will recreate the issue. -->
 
-Start Vim with a minimal configuration
-======================================
+1. 
 
-vim -Nu <(curl https://gist.githubusercontent.com/junegunn/6936bf79fedd3a079aeb1dd2f3c81ef5/raw)
+### Current Result
+<!--- Describe what you you currently experience from this process. -->
 
--->
+### Expected Result
+<!--- Describe what you would have expected from this process. -->
+
+### Screenshot(s)
+
+### Possible Fix
+<!--- If you have explored the code, share what you've found. -->
 
