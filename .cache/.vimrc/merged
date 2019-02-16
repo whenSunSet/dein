@@ -1,2 +1,2 @@
 100
-['/Users/whensunset/.dein/', '/usr/local/opt/fzf', 'Shougo/deoplete.nvim', 'roxma/YouCompleteMe', 'roxma/auto-pairs', 'roxma/fzf.vim', 'roxma/indentLine', 'roxma/nerdcommenter', 'roxma/nerdtree', 'roxma/nvim-yarp', 'roxma/vim-autopep8', 'roxma/vim-easymotion', 'roxma/vim-hug-neovim-rpc', 'roxma/vim-powerline']
+['/software_configuration/iterm/vim/dein', '/usr/local/opt/fzf', 'Shougo/deoplete.nvim', 'roxma/YouCompleteMe', 'roxma/auto-pairs', 'roxma/fzf.vim', 'roxma/indentLine', 'roxma/nerdcommenter', 'roxma/nerdtree', 'roxma/nvim-yarp', 'roxma/vim-autopep8', 'roxma/vim-easymotion', 'roxma/vim-hug-neovim-rpc', 'roxma/vim-powerline']

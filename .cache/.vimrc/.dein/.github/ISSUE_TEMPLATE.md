@@ -1,28 +1,51 @@
-<!--- To assist in resolving your issue, provide as much information as possible. -->
+**Warning:  I will close the issue without the minimal init.vim and the reproduction instructions.**
 
-### Environment
-<!--- Describe your Vim/NERDTree setup. -->
+# Problems summary
 
-* Operating System: 
-* Vim version `:version`: 
-* NERDTree version `git rev-parse --short HEAD`: 
-* NERDTree settings applied in your vimrc, if any:
-    ```vim
-    ```
 
-### Process
-<!--- List the steps that will recreate the issue. -->
+## Expected
 
-1. 
 
-### Current Result
-<!--- Describe what you you currently experience from this process. -->
+## Environment Information
 
-### Expected Result
-<!--- Describe what you would have expected from this process. -->
+ * deoplete version (SHA1):
 
-### Screenshot(s)
+ * OS:
 
-### Possible Fix
-<!--- If you have explored the code, share what you've found. -->
+ * neovim/Vim `:version` output:
 
+ * `:checkhealth` or `:CheckHealth` result(neovim only):
+
+## Provide a minimal init.vim/vimrc with less than 50 lines (Required!)
+
+```vim
+" Your minimal init.vim/vimrc
+set runtimepath+=~/path/to/deoplete.nvim/
+let g:deoplete#enable_at_startup = 1
+
+" For Vim only
+"set runtimepath+=~/path/to/nvim-yarp/
+"set runtimepath+=~/path/to/vim-hug-neovim-rpc/
+```
+
+
+## How to reproduce the problem from neovim/Vim startup (Required!)
+
+ 1. foo
+ 2. bar
+ 3. baz
+
+
+## Generate a logfile if appropriate
+
+ 1. export NVIM_PYTHON_LOG_FILE=/tmp/log
+ 2. export NVIM_PYTHON_LOG_LEVEL=DEBUG
+ 3. nvim -u minimal.vimrc
+ 4. some works
+ 5. cat /tmp/log_{PID}
+
+
+## Screenshot (if possible)
+
+
+## Upload the log file
